@@ -7,25 +7,27 @@ import androidx.lifecycle.viewModelScope
 import kotlinx.coroutines.launch
 
 class SearchViewModel(application: Application): AndroidViewModel(application) {
-    private  val bookDao:BookDao
+    private  val bookRepository=BookRepository(application)
+    val allBooks:LiveData<List<Book>>
 
     init{
-        val bookDB:BookRoomDatabase= BookRoomDatabase.getDatabase(application)
-        bookDao= bookDB.bookDao()
+        //fetch the database instance
+        //DAo that will be used to insert the Data
+        allBooks=bookRepository.allBooks
     }
     fun getBookByBookOrAuthor(searchQuery:String): LiveData<List<Book>>?{
-        return bookDao.getBooksByBookorAuthor(searchQuery)
+        return bookRepository.getBooksByBookorAuthor(searchQuery)
     }
 
     fun update(book:Book){
         viewModelScope.launch {
-            bookDao.update(book)
+            bookRepository.update(book)
         }
     }
 
     fun delete(book:Book){
         viewModelScope.launch {
-            bookDao.delete(book)
+            bookRepository.delete(book)
         }
     }
 }

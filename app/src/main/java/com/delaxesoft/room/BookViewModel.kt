@@ -9,32 +9,30 @@ import kotlinx.coroutines.launch
 
 class BookViewModel(application: Application):AndroidViewModel(application) {
     //access it, we will need a Dao object
-     private  val bookDao:BookDao
+     private  val bookRepository=BookRepository(application)
      val allBooks:LiveData<List<Book>>
 
     init{
         //fetch the database instance
-        val bookDb=BookRoomDatabase.getDatabase(application)
         //DAo that will be used to insert the Data
-        bookDao=bookDb.bookDao()
-        allBooks=bookDao.allBooks
+        allBooks=bookRepository.allBooks
     }
     //wrapper function for the insert operation link btw UI and database
     //makes use of asynctask , but i will use couroutine
     fun insert(book:Book) {
         viewModelScope.launch {
-            bookDao.insert(book)
+            bookRepository.insert(book)
         }
     }
         fun update(book:Book){
             viewModelScope.launch {
-                bookDao.update(book)
+                bookRepository.update(book)
             }
     }
 
     fun delete(book:Book){
         viewModelScope.launch {
-            bookDao.delete(book)
+            bookRepository.delete(book)
         }
     }
 }
